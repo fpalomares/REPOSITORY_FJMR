@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ead relatedencoding="isad" xmlns:html="uri:html">
+ 
+
+	<eadheader> 
+	
+		<titlepage>Archivo personal José Martín Recuerda</titlepage> 
+
+	</eadheader> 
+
+	<findaid legalstatus="public"> 
+	
+		<archdesc langmaterial="spa" audience="external">
+		
+			<dsc type="in-depth"> 
+		
+				<c level="item"> 
+			
+					<did> 
+				
+						<repository>ES.GR.AP.Jose Martin Recuerda.Documentos.1.</repository> 
+
+						<resource>documento1.pdf</resource> 
+						<t>Título:</t><unittitle>Certificado del título de licenciado en Filología Románica de José Martín Recuerda.</unittitle> 
+			
+						<t>Fechas:</t><unitdate>Granada, 27 de febrero de 1958.</unitdate> 
+			
+						<t>Descripción física:</t><physdesc>1 folio.</physdesc> 
+			
+						<t>Productor:</t>
+ <origination>Juan Sánchez Montes.</origination> 
+			
+					</did> 
+			
+					<scopecontent> 
+						
+<t>Resumen:</t><head>Certificado Académico Personal del título de licenciado en Filología Románica de José Martín Recuerda, firmado por Juan Sánchez Montes, Secretario de la Facultad de Filosofía y Letras de la Universidad de Granada, el decano y el jefe del Negociado.</head> 
+
+					</scopecontent> 
+		
+					<t>Características físicas (condición):</t> <odd>El original se encuentra en buen estado de conservación.</odd> 
+
+					<admininfo> 
+			
+						<t>Otros formatos:</t>	<altformavail>Copia digital.</altformavail>
+			
+					</admininfo> 			
+					<add> 
+	
+						<t>Materiales relacionados:</t>
+	<separatedmaterial>En la Fundación José Martín Recuerda se conserva el original.</separatedmaterial> 
+
+						<bibliography> 
+				
+							<t>Bibliografía:</t> 
+							<bibref>
+ <name>Cobo, Ángel.</name>
+	<date>(1993).</date>
+ <title>"José Martín Recuerda: génesis y evolución de un autor dramático".</title>
+ <imprint>
+ <publisher>Diputación Provincial de Granada.</publisher> <adress>Granada</adress> 
+</imprint> </bibref>
+	
+						</bibliography>
+			
+					<!--<t>Notas:</t>-->
+ <note>Sello de la Facultad de Filosofía y Letras de la Universidad de Granada.</note> 			
+					</add>
+	
+				</c>
+	 		</dsc> 
+		</archdesc> 
+
+	</findaid> 
+
+</ead>
