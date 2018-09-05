@@ -20,4 +20,6 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
         'model' => $model,
     ]) ?>
 
+    <?php include '_filetree_modal.php' ?>
+
 </div>

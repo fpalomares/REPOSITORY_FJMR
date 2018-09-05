@@ -18,4 +18,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
     ]) ?>
 
+    <?php include '_filetree_modal.php' ?>
+
 </div>

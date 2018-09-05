@@ -49,6 +49,7 @@ use yii\widgets\ActiveForm;
         ->hint('con "\" como separador y sin unidad de disco')?>
 
     <div class="form-group">
+        <?= Html::button('Selecciona el documento',['id'=>'js-pick-document', 'class'=>'btn btn-primary']) ?>
         <?= Html::button('Comprobar ruta',['id'=>'check-path', 'class'=>'btn btn-primary']) ?>
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
