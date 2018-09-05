@@ -1,24 +1,30 @@
-$(document).ready(function () {
+var $Form;
+var $FileTreeModal;
 
-    var $form = $('#js-document-form');
 
-    $("#document-place").select2({
+$(function () {
+
+    $Form = $('#js-document-form');
+
+    $FileTreeModal = $('#js-filetree-modal');
+
+    $Form.find("#document-place").select2({
         tags: true
     });
-    $("#document-subject_0").select2({
+    $Form.find("#document-subject_0").select2({
         tags: true
     });
-    $("#document-subject_1").select2({
+    $Form.find("#document-subject_1").select2({
         tags: true
     });
-    $("#document-subject_2").select2({
+    $Form.find("#document-subject_2").select2({
         tags: true
     });
-    $("#document-subject_3").select2({
+    $Form.find("#document-subject_3").select2({
         tags: true
     });
 
-    $('#check-path').on('click',function () {
+    $Form.find('#check-path').on('click',function () {
 
         $.ajax({
             data:  {
@@ -32,11 +38,29 @@ $(document).ready(function () {
         });
     });
 
-    $form.find('#document-subject_0').on('change',function () {
+    $Form.find('#js-pick-document').on('click',function () {
+
+        $FileTreeModal.modal('show');
+
+        $FileTreeModal.find('#js-file-tree').fileTree({
+
+            root: '../../',
+            //script: 'connectors/jqueryFileTree.php',
+            folderEvent: 'dblclick',
+            expandSpeed: 1,
+            collapseSpeed: 1
+
+        }, function(file) {
+            alert(file);
+            $Form.find('#document-path').val(file);
+        });
+    });
+
+    $Form.find('#document-subject_0').on('change',function () {
 
         $.ajax({
             data:  {
-                'data' : $form.serialize(),
+                'data' : $Form.serialize(),
                 'field' : 'subject_0'
             },
             url:   '/document/getdata',
@@ -44,21 +68,21 @@ $(document).ready(function () {
             dataType: 'json',
             success:  function (d) {
                 if ( typeof d.subject_1 !== 'undefined') {
-                    $("#document-subject_1").html('').select2({
+                    $Form.find("#document-subject_1").html('').select2({
                         tags: true,
                         data: d.subject_1
                     });
                 }
 
                 if ( typeof d.subject_2 !== 'undefined') {
-                    $("#document-subject_2").html('').select2({
+                    $Form.find("#document-subject_2").html('').select2({
                         tags: true,
                         data: d.subject_2
                     });
                 }
 
                 if ( typeof d.subject_3 !== 'undefined') {
-                    $("#document-subject_3").html('').select2({
+                    $Form.find("#document-subject_3").html('').select2({
                         tags: true,
                         data: d.subject_3
                     });
@@ -67,11 +91,11 @@ $(document).ready(function () {
         });
     });
 
-    $form.find('#document-subject_1').on('change',function () {
+    $Form.find('#document-subject_1').on('change',function () {
 
         $.ajax({
             data:  {
-                'data' : $form.serialize(),
+                'data' : $Form.serialize(),
                 'field' : 'subject_1'
             },
             url:   '/document/getdata',
@@ -80,14 +104,14 @@ $(document).ready(function () {
             success:  function (d) {
 
                 if ( typeof d.subject_2 !== 'undefined') {
-                    $("#document-subject_2").html('').select2({
+                    $Form.find("#document-subject_2").html('').select2({
                         tags: true,
                         data: d.subject_2
                     });
                 }
 
                 if ( typeof d.subject_3 !== 'undefined') {
-                    $("#document-subject_3").html('').select2({
+                    $Form.find("#document-subject_3").html('').select2({
                         tags: true,
                         data: d.subject_3
                     });
@@ -96,11 +120,11 @@ $(document).ready(function () {
         });
     });
 
-    $form.find('#document-subject_2').on('change',function () {
+    $Form.find('#document-subject_2').on('change',function () {
 
         $.ajax({
             data:  {
-                'data' : $form.serialize(),
+                'data' : $Form.serialize(),
                 'field' : 'subject_2'
             },
             url:   '/document/getdata',
@@ -109,7 +133,7 @@ $(document).ready(function () {
             success:  function (d) {
 
                 if ( typeof d.subject_3 !== 'undefined') {
-                    $("#document-subject_3").html('').select2({
+                    $Form.find("#document-subject_3").html('').select2({
                         tags: true,
                         data: d.subject_3
                     });
