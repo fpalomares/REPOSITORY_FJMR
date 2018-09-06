@@ -45,13 +45,20 @@ use yii\widgets\ActiveForm;
         ->asArray()
         ->all(), 'subject_3', 'subject_3'),['prompt'=>'']) ?>
 
-    <?= $form->field($model, 'path')->textInput(['maxlength' => true])
-        ->hint('con "\" como separador y sin unidad de disco')?>
-
+    <div class="row">
+        <div class="col-xs-10">
+            <?= $form->field($model, 'path')->textInput(['maxlength' => true,'readonly'=>'readonly']) ?>
+        </div>
+        <div class="col-xs-2">
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <?= Html::button('Elige el documento',['id'=>'js-pick-document', 'class'=>'btn btn-primary', 'style' => 'width: 100%;']) ?>
+            </div>
+        </div>
+    </div>
     <div class="form-group">
-        <?= Html::button('Selecciona el documento',['id'=>'js-pick-document', 'class'=>'btn btn-primary']) ?>
         <?= Html::button('Comprobar ruta',['id'=>'check-path', 'class'=>'btn btn-primary']) ?>
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-info']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

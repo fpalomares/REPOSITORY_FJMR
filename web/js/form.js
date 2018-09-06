@@ -44,15 +44,16 @@ $(function () {
 
         $FileTreeModal.find('#js-file-tree').fileTree({
 
-            root: '../../',
-            //script: 'connectors/jqueryFileTree.php',
-            folderEvent: 'dblclick',
-            expandSpeed: 1,
-            collapseSpeed: 1
+            root: '/',
+            script: '/document/displaydirectory'
+            //folderEvent: 'dblclick',
+            //expandSpeed: 1,
+            //collapseSpeed: 1
 
         }, function(file) {
-            alert(file);
+            //alert(file);
             $Form.find('#document-path').val(file);
+            $FileTreeModal.modal('hide');
         });
     });
 

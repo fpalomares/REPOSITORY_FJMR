@@ -151,7 +151,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <p>
     <?php
     if ( !Yii::$app->user->isGuest && Yii::$app->user->identity->username == 'admin' ) {
-        echo Html::a('Create Document', ['create'], ['class' => 'btn btn-success pull-right']);
+        echo Html::a(Yii::t('app', 'Create Document'), ['create'], ['class' => 'btn btn-success pull-right']);
     }
     ?>
 

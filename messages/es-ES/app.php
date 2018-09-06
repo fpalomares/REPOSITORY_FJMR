@@ -16,7 +16,12 @@ return [
     'Path' => 'Ruta',
     'Create' => 'Crear',
     'Search' => 'Buscar',
-    'Reset' => 'Resetear'
+    'Reset' => 'Resetear',
+    'Update' => 'Actualizar',
+    'Delete' => 'Borrar',
+    'Documents' => 'Documentos',
+    'Update Document: ' => 'Actualizar Documento: ',
+    'Create Document' => 'Crear Documento'
 
 ];
 
