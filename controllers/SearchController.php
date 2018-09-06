@@ -67,7 +67,7 @@ class SearchController extends Controller
         if (file_exists(self::DISK_UNIT . $document->path)){
             copy(self::DISK_UNIT . $document->path,Url::base().'documents/Documento.pdf');
         } else {
-            throw new NotFoundHttpException("Pdf no encontrado. ".self::DISK_UNIT.$document->path,  404);
+            //throw new NotFoundHttpException("Pdf no encontrado. ".self::DISK_UNIT.$document->path,  404);
         }
 
         return $this->render('index');

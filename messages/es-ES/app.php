@@ -25,6 +25,7 @@ return [
     'RememberMe' => 'Recordar',
     'Password' => 'Contraseña',
     'Username' => 'Usuario',
+    'Go Back' => 'Volver'
 
 ];
 

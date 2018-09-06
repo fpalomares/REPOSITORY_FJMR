@@ -56,7 +56,7 @@ class DocumentController extends Controller
         if (
             !Yii::$app->user->isGuest &&
             Yii::$app->user->identity->username != 'admin' &&
-            in_array($action->id,['checkpath','getdata','view','create','update','delete'])
+            in_array($action->id,['checkpath','getdata','view','create','update','delete','displaydirectory'])
         ) {
             throw new \Exception('No es posible realizar esta acción');
         }
