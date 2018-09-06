@@ -21,7 +21,10 @@ return [
     'Delete' => 'Borrar',
     'Documents' => 'Documentos',
     'Update Document: ' => 'Actualizar Documento: ',
-    'Create Document' => 'Crear Documento'
+    'Create Document' => 'Crear Documento',
+    'RememberMe' => 'Recordar',
+    'Password' => 'Contraseña',
+    'Username' => 'Usuario',
 
 ];
 
