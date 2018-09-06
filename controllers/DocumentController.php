@@ -185,8 +185,12 @@ class DocumentController extends Controller
         $result = "Archivo no encontrado, ajusta la ruta por favor.";
         $path = Yii::$app->request->post('path','');
 
-        if (!empty($path) && file_exists(SearchController::DISK_UNIT . $path)){
-            $result = "Archivo encontrado!";
+        if (!empty($path)) {
+            $path = str_replace('\\','/',$path);
+
+            if (file_exists(SearchController::DISK_UNIT . $path)){
+                $result = "Archivo encontrado!";
+            }
         }
 
         echo $result;
@@ -331,7 +335,7 @@ class DocumentController extends Controller
 
         $_POST['dir'] = urldecode($_POST['dir']);
 
-        $root = '';
+        $root = '/home/fundacio/archivo/repository/Copia PDF';
 
         if( file_exists($root . $_POST['dir']) ) {
             $files = scandir($root . $_POST['dir']);

@@ -51,8 +51,13 @@ $(function () {
             //collapseSpeed: 1
 
         }, function(file) {
-            //alert(file);
-            $Form.find('#document-path').val(file);
+
+            // add subfolder
+            var path = "/Copia PDF" + file;
+            // replace slashes for backslashes (linux folder structure)
+            path = path.replace(/\//g, '\\');
+            // assing to value
+            $Form.find('#document-path').val(path);
             $FileTreeModal.modal('hide');
         });
     });
