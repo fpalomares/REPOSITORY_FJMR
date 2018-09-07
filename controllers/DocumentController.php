@@ -333,30 +333,62 @@ class DocumentController extends Controller
 
     public function actionDisplaydirectory() {
 
-        $_POST['dir'] = urldecode($_POST['dir']);
-
         $root = '/home/fundacio/archivo/repository/Copia PDF';
 
-        if( file_exists($root . $_POST['dir']) ) {
-            $files = scandir($root . $_POST['dir']);
-            natcasesort($files);
-            if( count($files) > 2 ) { /* The 2 accounts for . and .. */
-                echo "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
-                // All dirs
-                foreach( $files as $file ) {
-                    if( file_exists($root . $_POST['dir'] . $file) && $file != '.' && $file != '..' && is_dir($root . $_POST['dir'] . $file) ) {
-                        echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file) . "/\">" . htmlentities($file) . "</a></li>";
+        try {
+
+            $_POST['dir'] = $this->replaceAccents($_POST['dir']);
+
+            $_POST['dir'] = urldecode($_POST['dir']);
+
+            if( file_exists($root . $_POST['dir']) ) {
+                $files = scandir($root . $_POST['dir']);
+
+                natcasesort($files);
+                if( count($files) > 2 ) { /* The 2 accounts for . and .. */
+                    echo "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
+                    // All dirs
+                    foreach( $files as $file ) {
+                        if( file_exists($root . $_POST['dir'] . $file) && $file != '.' && $file != '..' && is_dir($root . $_POST['dir'] . $file) ) {
+                            echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file,0, "UTF-8") . "/\">" . htmlentities($file,0, "UTF-8") . "</a></li>";
+                        }
                     }
-                }
-                // All files
-                foreach( $files as $file ) {
-                    if( file_exists($root . $_POST['dir'] . $file) && $file != '.' && $file != '..' && !is_dir($root . $_POST['dir'] . $file) ) {
-                        $ext = preg_replace('/^.*\./', '', $file);
-                        echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file) . "\">" . htmlentities($file) . "</a></li>";
+                    // All files
+                    foreach( $files as $file ) {
+                        if( file_exists($root . $_POST['dir'] . $file) && $file != '.' && $file != '..' && !is_dir($root . $_POST['dir'] . $file) ) {
+                            $ext = preg_replace('/^.*\./', '', $file);
+                            echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file,0, "UTF-8") . "\">" . htmlentities($file,0, "UTF-8") . "</a></li>";
+                        }
                     }
+                    echo "</ul>";
                 }
-                echo "</ul>";
             }
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
+    }
+
+    public function replaceAccents($string) {
+
+        $conversion = [
+            '%E1' => 'á',
+            '%E9' => 'é',
+            '%ED' => 'í',
+            '%F3' => 'ó',
+            '%FA' => 'ú',
+            '%C1' => 'Á',
+            '%C9' => 'É',
+            '%CD' => 'Í',
+            '%D3' => 'Ó',
+            '%DA' => 'Ú',
+            '%FC' => 'ü',
+            '%DC' => 'Ü'
+        ];
+
+        foreach ($conversion as $ascii => $char) {
+            $string = str_replace($ascii,$char,$string);
+        }
+
+        return $string;
     }
 }
