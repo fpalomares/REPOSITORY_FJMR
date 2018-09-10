@@ -8,5 +8,13 @@ use yii\helpers\Url;
 
 <?= \yii2assets\pdfjs\PdfJs::widget([
     'url' => Url::base().'documents/Documento.pdf',
-    'height' => '625px'
+    'height' => '625px',
+    'buttons'=>[
+        'presentationMode' => false,
+        'openFile' => false,
+        'print' => false,
+        'download' => false,
+        'viewBookmark' => false,
+        'secondaryToolbarToggle' => false
+    ]
 ]); ?>
