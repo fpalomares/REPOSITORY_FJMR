@@ -71,24 +71,21 @@ $(function () {
                 },
                 success: function(data) {
 
-                    var result = jQuery.parseJSON(data);
-
-                    if ( result['response'] !== undefined && result['response'] === 'OK' ) {
+                    if ( data['response'] !== undefined && data['response'] === 'OK' ) {
 
                         $Form.find('#valid-submit').val('0');
                         $FileTreeModal.modal('hide');
                         $Form.submit();
 
-                    } else if (result['message'] !== undefined){
-                        alert(result['message']);
+                    } else if (data['message'] !== undefined){
+                        alert(data['message']);
                     } else {
                         alert("Something happened while selecting the pdf.");
                     }
 
                 },
                 error: function (jqXHR, exception) {
-                    var msg = $.fn.errorAjax(jqXHR,exception);
-                    alert(msg)
+                    alert(exception)
                 },
                 complete:function(d){
                 }

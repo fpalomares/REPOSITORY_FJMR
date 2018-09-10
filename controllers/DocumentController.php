@@ -38,7 +38,7 @@ class DocumentController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index','checkpath','getdata','view','create','update','delete','displaydirectory'],
+                        'actions' => ['index','checkpath','getdata','view','create','update','delete','displaydirectory','copypdf'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -57,7 +57,7 @@ class DocumentController extends Controller
         if (
             !Yii::$app->user->isGuest &&
             Yii::$app->user->identity->username != 'admin' &&
-            in_array($action->id,['checkpath','getdata','view','create','update','delete','displaydirectory'])
+            in_array($action->id,['checkpath','getdata','view','create','update','delete','displaydirectory','copypdf'])
         ) {
             throw new \Exception('No es posible realizar esta acción');
         }
@@ -404,7 +404,15 @@ class DocumentController extends Controller
             '%DC' => 'Ü',
             '%BA' => 'º',
             '%AA' => 'ª',
-            '%7E' => '~'
+            '%7E' => '~',
+            '%EB' => 'ë',
+            '%CB' => 'Ë',
+            '%EA' => 'ê',
+            '%CA' => 'Ê',
+            '%C2' => 'Â',
+            '%E2' => 'â',
+            '%F1' => 'ñ',
+            '%D1' => 'Ñ'
 
         ];
 
@@ -435,6 +443,7 @@ class DocumentController extends Controller
 
                     if (file_exists(SearchController::DISK_UNIT . $path)){
                         copy(SearchController::DISK_UNIT . $path,Url::base().'documents/new.pdf');
+                        $response['response'] = 'OK';
                     } else {
                         throw new NotFoundHttpException("Pdf no encontrado. ".SearchController::DISK_UNIT.$path,  404);
                     }
