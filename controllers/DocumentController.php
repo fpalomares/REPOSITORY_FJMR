@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\assets\AppAsset;
 use app\assets\FileTreeAsset;
 use app\models\User;
+use phpDocumentor\Reflection\Types\Self_;
 use Yii;
 use app\models\Document;
 use app\models\DocumentSearch;
@@ -161,6 +162,9 @@ class DocumentController extends Controller
                 ]);
             }
         } else {
+
+            $this->copyPdfToTemporal($model->path,false);
+
             return $this->render('update', [
                 'model' => $model,
             ]);
@@ -423,6 +427,27 @@ class DocumentController extends Controller
         return $string;
     }
 
+
+    /**
+     * @param $path
+     * @param bool $throw_exception
+     * @param string $temporal
+     * @throws NotFoundHttpException
+     */
+    public function copyPdfToTemporal($path, $throw_exception = true, $temporal = 'new.pdf') {
+
+        // linux server path separator
+        $path = str_replace('\\','/',$path);
+
+        if (file_exists(SearchController::DISK_UNIT . $path)){
+            copy(SearchController::DISK_UNIT . $path,Url::base().'documents/'.$temporal);
+        } else {
+            if ($throw_exception) {
+                throw new NotFoundHttpException("Pdf no encontrado. ".SearchController::DISK_UNIT.$path,  404);
+            }
+        }
+    }
+
     /**
      * @return mixed
      * @throws NotFoundHttpException
@@ -438,15 +463,8 @@ class DocumentController extends Controller
 
                 if ( !empty( $path = Yii::$app->request->post('path')) ) {
 
-                    // linux server path separator
-                    $path = str_replace('\\','/',$path);
-
-                    if (file_exists(SearchController::DISK_UNIT . $path)){
-                        copy(SearchController::DISK_UNIT . $path,Url::base().'documents/new.pdf');
-                        $response['response'] = 'OK';
-                    } else {
-                        throw new NotFoundHttpException("Pdf no encontrado. ".SearchController::DISK_UNIT.$path,  404);
-                    }
+                    $this->copyPdfToTemporal($path);
+                    $response['response'] = 'OK';
                 }
             }
         } catch (\Exception $exception) {
