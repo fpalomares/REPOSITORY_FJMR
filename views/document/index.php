@@ -129,6 +129,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
+                'header' => Html::a('Resetear','/document/index', ['class' => 'btn btn-info','p-jax'=> 1,'style' => 'padding:4px 8px !important;']),
                 'template' => '{view}{myButton}',  // the default buttons + your custom button
                 'buttons' => [
                     'myButton' => function($url, $model, $key) {     // render your custom button

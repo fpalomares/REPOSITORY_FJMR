@@ -10,6 +10,7 @@ use app\models\Document;
 use app\models\DocumentSearch;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -102,6 +103,8 @@ class DocumentController extends Controller
      */
     public function actionCreate()
     {
+        $this->layout = 'main-fluid';
+
         $model = new Document();
 
         $this->view->registerAssetBundle(FileTreeAsset::className());
@@ -111,8 +114,15 @@ class DocumentController extends Controller
             ['depends' => [FileTreeAsset::className()]]
         );
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ( Yii::$app->request->post('valid-submit') && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('create', [
+                    'model' => $model,
+                ]);
+            }
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -130,6 +140,8 @@ class DocumentController extends Controller
      */
     public function actionUpdate($id)
     {
+        $this->layout = 'main-fluid';
+
         $model = $this->findModel($id);
 
         $this->view->registerAssetBundle(FileTreeAsset::className());
@@ -139,8 +151,15 @@ class DocumentController extends Controller
             ['depends' => [FileTreeAsset::className()]]
         );
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ( Yii::$app->request->post('valid-submit') && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                return $this->render('update', [
+                    'model' => $model,
+                ]);
+            }
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -382,7 +401,11 @@ class DocumentController extends Controller
             '%D3' => 'Ó',
             '%DA' => 'Ú',
             '%FC' => 'ü',
-            '%DC' => 'Ü'
+            '%DC' => 'Ü',
+            '%BA' => 'º',
+            '%AA' => 'ª',
+            '%7E' => '~'
+
         ];
 
         foreach ($conversion as $ascii => $char) {
@@ -390,5 +413,38 @@ class DocumentController extends Controller
         }
 
         return $string;
+    }
+
+    /**
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public function actionCopypdf()
+    {
+        $response['response'] = 'NOK';
+
+        \Yii::$app->response->format = Response::FORMAT_JSON;
+
+        try {
+            if (Yii::$app->request->isAjax) {
+
+                if ( !empty( $path = Yii::$app->request->post('path')) ) {
+
+                    // linux server path separator
+                    $path = str_replace('\\','/',$path);
+
+                    if (file_exists(SearchController::DISK_UNIT . $path)){
+                        copy(SearchController::DISK_UNIT . $path,Url::base().'documents/new.pdf');
+                    } else {
+                        throw new NotFoundHttpException("Pdf no encontrado. ".SearchController::DISK_UNIT.$path,  404);
+                    }
+                }
+            }
+        } catch (\Exception $exception) {
+            $response['response'] = 'NOK';
+            $response['message'] = $exception->getMessage();
+        }
+
+        return $response;
     }
 }

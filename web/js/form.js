@@ -54,11 +54,45 @@ $(function () {
 
             // add subfolder
             var path = "/Copia PDF" + file;
+
             // replace slashes for backslashes (linux folder structure)
             path = path.replace(/\//g, '\\');
+
             // assing to value
             $Form.find('#document-path').val(path);
-            $FileTreeModal.modal('hide');
+
+
+            // send request to copy file
+            $.ajax({
+                url: "/document/copypdf",
+                type: "POST",
+                data: {
+                    'path' : path
+                },
+                success: function(data) {
+
+                    var result = jQuery.parseJSON(data);
+
+                    if ( result['response'] !== undefined && result['response'] === 'OK' ) {
+
+                        $Form.find('#valid-submit').val('0');
+                        $FileTreeModal.modal('hide');
+                        $Form.submit();
+
+                    } else if (result['message'] !== undefined){
+                        alert(result['message']);
+                    } else {
+                        alert("Something happened while selecting the pdf.");
+                    }
+
+                },
+                error: function (jqXHR, exception) {
+                    var msg = $.fn.errorAjax(jqXHR,exception);
+                    alert(msg)
+                },
+                complete:function(d){
+                }
+            });
         });
     });
 

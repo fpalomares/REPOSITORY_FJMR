@@ -4,7 +4,7 @@ return [
 
     'Repository' => 'repositorio',
     'ID' => 'Id',
-    'Title' => 'Título o palabra clave',
+    'Title' => 'Descripción',
     'Creator' => 'Autor',
     'Full Date' => 'Fecha y lugar',
     'Place' => 'Lugar',

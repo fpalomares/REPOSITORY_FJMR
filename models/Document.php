@@ -39,7 +39,7 @@ class Document extends \yii\db\ActiveRecord
         return [
             [['title', 'subject_0', 'subject_1', 'subject_2', 'subject_3'], 'string'],
             [['date'], 'safe'],
-            [['title','path','subject_0'],'required'],
+            //[['title','path','subject_0'],'required'],
             [['repository', 'creator', 'full_date'], 'string', 'max' => 250],
             [['place'], 'string', 'max' => 100],
             [['type'], 'string', 'max' => 45],

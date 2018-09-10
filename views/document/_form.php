@@ -52,10 +52,13 @@ use yii\widgets\ActiveForm;
         <div class="col-xs-2">
             <div class="form-group">
                 <label>&nbsp;</label>
-                <?= Html::button('Elige el documento',['id'=>'js-pick-document', 'class'=>'btn btn-primary', 'style' => 'width: 100%;']) ?>
+                <?= Html::button('Selecciona',['id'=>'js-pick-document', 'class'=>'btn btn-primary', 'style' => 'width: 100%;']) ?>
             </div>
         </div>
     </div>
+
+    <input type="hidden" value="1" name="valid-submit" id="valid-submit">
+
     <div class="form-group">
         <?= Html::button('Comprobar ruta',['id'=>'check-path', 'class'=>'btn btn-primary']) ?>
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-info']) ?>
