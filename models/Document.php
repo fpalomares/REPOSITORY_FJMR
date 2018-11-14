@@ -44,7 +44,6 @@ class Document extends \yii\db\ActiveRecord
             [['place'], 'string', 'max' => 100],
             [['type'], 'string', 'max' => 45],
             [['path'], 'string', 'max' => 500],
-            [['repository'], 'unique'],
         ];
     }
 

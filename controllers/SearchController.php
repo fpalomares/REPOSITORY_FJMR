@@ -18,6 +18,7 @@ class SearchController extends Controller
 {
 
     const DISK_UNIT = WEBROOT . DIRECTORY_SEPARATOR . "repository";
+    const LOCAL_DISK_UNIT = 'D:\Archivo JMR Actualizado Septiembre 2017';
     /**
      * @inheritdoc
      */
@@ -38,7 +39,7 @@ class SearchController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index','readxml'],
+                        'actions' => ['index','readxml','savedocument'],
                         'roles' => ['@'],
                     ],
                     [
@@ -77,15 +78,19 @@ class SearchController extends Controller
 
         set_time_limit("10000");
 
+        ini_set('memory_limit', '4095M');
+
         $session = Yii::$app->session;
         //$session->removeAll();
         if (!$session->has('list')) {
-            $session->set('list',$this->getDirContents('E:\Archivo JMR Actualizado Septiembre 2017\Descripciones', '/\.dc.xml/'));
+            $session->set('list',$this->getDirContents('D:\Archivo JMR Actualizado Septiembre 2017\Descripciones', '/\.dc.xml/'));
         }
 
-        foreach ($session->get('list') as $file_path) {
+        $descriptions = $session->get('list');
 
-            $document = new Document();
+        $i = 0;
+
+        foreach ($descriptions as $file_path) {
 
             if (file_exists($file_path)) {
 
@@ -94,80 +99,66 @@ class SearchController extends Controller
                     // get the pdf file of this xml
                     $file_name = str_replace(".dc.xml",".pdf", basename($file_path));
 
-                    // get the pdf file found in COPIA PDF folder
-                    /** @var SplFileInfo $pdf_path_object */
-                    $pdf_path_object = self::rsearch("E:\Archivo JMR Actualizado Septiembre 2017\Copia PDF",$file_name);
+                    $file_path_descr_pdf = str_replace(DIRECTORY_SEPARATOR .basename($file_path),'.pdf', $file_path);
 
-                    // not found file, continue next iteration
-                    if (empty($pdf_path_object)) {
-                        echo "<pre>"; echo "not found:".$file_name;
-                        continue;
-                    }
+                    $file_path_pdf = str_replace('D:\Archivo JMR Actualizado Septiembre 2017\Descripciones',
+                        'D:\Archivo JMR Actualizado Septiembre 2017\Copia PDF',$file_path_descr_pdf);
 
-                    // and save it without disk unit
-                    $document->path = str_replace(self::DISK_UNIT,"",$pdf_path_object->getPathname());
+                    $desc_pdf = [
+                        'description' => $file_path,
+                        'pdf' => $file_path_pdf
+                    ];
 
-                    /*
-                    $file_name = DIRECTORY_SEPARATOR.basename($file_path);
-                    // path to pdf folder
-                    $document->path = str_replace('E:\Archivo JMR Actualizado Septiembre 2017\Descripciones','\Archivo JMR Actualizado Septiembre 2017\Copia PDF',$file_path);
-
-                    if (!file_exists(self::DISK_UNIT . $document->path)){
-                        $document->path = str_replace($file_name,'.pdf', $document->path);
+                    if (file_exists($file_path_pdf)) {
+                        $paths['YES'][] = $desc_pdf;
                     } else {
-                        echo "<pre>"; print_r("entro!");
-                    }*/
-
-                    /** @var SimpleXMLElement $xml */
-                    $xml = simplexml_load_file($file_path);
-
-                    $index = 0;
-                    /** @var SimpleXMLElement $value */
-                    foreach ($xml as $k => $value) {
-
-                        try {
-                            switch ($k) {
-                                case "subject":
-
-                                    $document->{$k . "_" . $index} = $value->__toString();
-                                    $index++;
-                                    break;
-
-                                case "date":
-
-                                    $document->full_date = $value->__toString();
-
-                                    if ($value->__toString() == '[Desconocida]' ) break;
-                                    $date = $value->__toString();
-                                    $document->place = self::getPlace($date);
-                                    $document->date = date(MYSQL_DATE,strtotime(self::buildMysqlDate($date)));
-                                    break;
-
-                                default:
-                                    $document->{$k} = $value->__toString();
-                                    break;
-                            }
-
-                        } catch (\Throwable $e) {
-                            echo "<pre>"; print_r($e->getMessage());
-                        }
+                        $paths['NO'][] = $desc_pdf;
                     }
 
-                    $document->save();
+                    $session->set('found_list',$paths['YES']);
+
 
                 } catch (\Throwable $e) {
-
+                    echo "<pre> 2 "; print_r($e->getMessage());
                 }
 
-                //return $this->render('index', []);
-
-            } else {
-                exit('Failed to open xml.');
             }
         }
 
+        //echo "<pre>";print_r($paths);echo "</pre>";
 
+        $found_by_recursivity = [];
+
+        foreach ($paths['NO'] as $path_not_found) {
+
+            $basename = basename($path_not_found['pdf']);
+
+            /** @var SplFileInfo $new_path */
+            if ( $new_path = $this->rsearch(self::LOCAL_DISK_UNIT. DIRECTORY_SEPARATOR . 'Copia PDF', $basename)) {
+
+                $desc_pdf = [
+                    'description' => $path_not_found['description'],
+                    'pdf' => $new_path->getPathname()
+                ];
+
+                $found_by_recursivity['YES'][] = $desc_pdf;
+
+            } else {
+                $found_by_recursivity['NO'][] = $path_not_found;
+            }
+        }
+
+        $found_list = $session->get('found_list');
+
+        $list_merged = array_merge($found_list,$found_by_recursivity['YES']);
+
+        $session->set('found_list',$list_merged);
+
+        echo "<pre>";print_r($list_merged);echo "</pre>";die;
     }
+
+
+
 
     function rsearch($folder, $pattern) {
         $iti = new RecursiveDirectoryIterator($folder);
@@ -177,6 +168,71 @@ class SearchController extends Controller
             }
         }
         return false;
+    }
+
+
+
+    public function actionSavedocument() {
+
+        set_time_limit("10000");
+
+        ini_set('memory_limit', '4095M');
+
+        try {
+
+            $session = Yii::$app->session;
+
+            $paths = $session->get('found_list',[]);
+
+            foreach ($paths as $file_path) {
+
+                $document = new Document();
+
+                /** @var SimpleXMLElement $xml */
+                $xml = simplexml_load_file($file_path['description']);
+
+                $index = 0;
+                /** @var SimpleXMLElement $value */
+                foreach ($xml as $k => $value) {
+
+                    try {
+                        switch ($k) {
+                            case "subject":
+
+                                $document->{$k . "_" . $index} = $value->__toString();
+                                $index++;
+                                break;
+
+                            case "date":
+
+                                $document->full_date = $value->__toString();
+
+                                if ($value->__toString() == '[Desconocida]' ) break;
+                                $date = $value->__toString();
+                                $document->place = self::getPlace($date);
+                                $document->date = date(MYSQL_DATE,strtotime(self::buildMysqlDate($date)));
+                                break;
+
+                            default:
+                                $document->{$k} = $value->__toString();
+                                break;
+                        }
+
+                    } catch (\Throwable $e) {
+                        echo "<pre> 1 "; print_r($e->getMessage());
+                    }
+                }
+
+                // and save it without disk unit
+                $document->path = urlencode(str_replace(self::LOCAL_DISK_UNIT,"",$file_path['pdf']));
+
+                if (!$document->save()) {
+                    echo "<pre>"; print_r($document->getErrors());
+                }
+            }
+        } catch (\Throwable $e) {
+
+        }
     }
 
     public function  getPlace(&$date)

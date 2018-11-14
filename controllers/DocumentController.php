@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\assets\AppAsset;
 use app\assets\FileTreeAsset;
+use app\components\Tools;
 use app\models\User;
 use phpDocumentor\Reflection\Types\Self_;
 use Yii;
@@ -39,7 +40,7 @@ class DocumentController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index','checkpath','getdata','view','create','update','delete','displaydirectory','copypdf'],
+                        'actions' => ['index','checkpath','getdata','view','create','update','delete','displaydirectory','copypdf','fixfolders'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -359,28 +360,27 @@ class DocumentController extends Controller
         $root = '/home/fundacio/archivo/repository/Copia PDF';
 
         try {
+            $folder_urlencoded = $_POST['dir'];
+            
+            $folder = Tools::urlDecodeCharacters($folder_urlencoded);
 
-            $_POST['dir'] = $this->replaceAccents($_POST['dir']);
-
-            $_POST['dir'] = urldecode($_POST['dir']);
-
-            if( file_exists($root . $_POST['dir']) ) {
-                $files = scandir($root . $_POST['dir']);
+            if( file_exists($root . $folder) ) {
+                $files = scandir($root . $folder);
 
                 natcasesort($files);
                 if( count($files) > 2 ) { /* The 2 accounts for . and .. */
                     echo "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
                     // All dirs
                     foreach( $files as $file ) {
-                        if( file_exists($root . $_POST['dir'] . $file) && $file != '.' && $file != '..' && is_dir($root . $_POST['dir'] . $file) ) {
-                            echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file,0, "UTF-8") . "/\">" . htmlentities($file,0, "UTF-8") . "</a></li>";
+                        if( file_exists($root . $folder . $file) && $file != '.' && $file != '..' && is_dir($root . $folder . $file) ) {
+                            echo "<li class=\"directory collapsed\"><a href=\"#\" rel=\"" . htmlentities($folder . $file,0, "UTF-8") . "/\">" . htmlentities($file,0, "UTF-8") . "</a></li>";
                         }
                     }
                     // All files
                     foreach( $files as $file ) {
-                        if( file_exists($root . $_POST['dir'] . $file) && $file != '.' && $file != '..' && !is_dir($root . $_POST['dir'] . $file) ) {
+                        if( file_exists($root . $folder . $file) && $file != '.' && $file != '..' && !is_dir($root . $folder . $file) ) {
                             $ext = preg_replace('/^.*\./', '', $file);
-                            echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . htmlentities($_POST['dir'] . $file,0, "UTF-8") . "\">" . htmlentities($file,0, "UTF-8") . "</a></li>";
+                            echo "<li class=\"file ext_$ext\"><a href=\"#\" rel=\"" . htmlentities($folder . $file,0, "UTF-8") . "\">" . htmlentities($file,0, "UTF-8") . "</a></li>";
                         }
                     }
                     echo "</ul>";
@@ -389,42 +389,6 @@ class DocumentController extends Controller
         } catch (\Exception $e) {
             echo $e->getMessage();
         }
-    }
-
-    public function replaceAccents($string) {
-
-        $conversion = [
-            '%E1' => 'á',
-            '%E9' => 'é',
-            '%ED' => 'í',
-            '%F3' => 'ó',
-            '%FA' => 'ú',
-            '%C1' => 'Á',
-            '%C9' => 'É',
-            '%CD' => 'Í',
-            '%D3' => 'Ó',
-            '%DA' => 'Ú',
-            '%FC' => 'ü',
-            '%DC' => 'Ü',
-            '%BA' => 'º',
-            '%AA' => 'ª',
-            '%7E' => '~',
-            '%EB' => 'ë',
-            '%CB' => 'Ë',
-            '%EA' => 'ê',
-            '%CA' => 'Ê',
-            '%C2' => 'Â',
-            '%E2' => 'â',
-            '%F1' => 'ñ',
-            '%D1' => 'Ñ'
-
-        ];
-
-        foreach ($conversion as $ascii => $char) {
-            $string = str_replace($ascii,$char,$string);
-        }
-
-        return $string;
     }
 
 
@@ -473,5 +437,25 @@ class DocumentController extends Controller
         }
 
         return $response;
+    }
+
+    public function actionFixfolders() {
+
+        set_time_limit("10000");
+
+        ini_set('memory_limit', '4095M');
+
+        echo "STARTING:";
+        $documents = Document::find()->where(['>','id',507])->all();
+
+        /** @var Document $document */
+        foreach ($documents as $document) {
+
+            $document->path = Tools::urlDecodeCharacters($document->path);
+            if ($document->save()){
+                echo "<pre>";print_r($document->path);echo "</pre>";
+            }
+        }
+
     }
 }
