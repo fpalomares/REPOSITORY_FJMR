@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="row">
-        <div class="col-xs-12 col-md-6">
+        <div class="col-xs-12 col-md-5">
             <?= $this->render('_form', [
                 'model' => $model,
             ]) ?>
@@ -24,12 +24,12 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php
             $path = (!empty($model->path)) ? 'documents/new.pdf' : 'documents/blank.pdf';
         ?>
-        <div class="col-xs-12 col-md-6">
+        <div class="col-xs-12 col-md-7">
             <?= \yii2assets\pdfjs\PdfJs::widget([
                 'url' => Url::base().$path,
                 'height' => '625px',
                 'buttons'=>[
-                    'presentationMode' => false,
+                    'presentationMode' => true,
                     'openFile' => false,
                     'print' => false,
                     'download' => false,

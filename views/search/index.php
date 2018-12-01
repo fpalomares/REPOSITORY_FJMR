@@ -10,7 +10,7 @@ use yii\helpers\Url;
     'url' => Url::base().'documents/Documento.pdf',
     'height' => '625px',
     'buttons'=>[
-        'presentationMode' => false,
+        'presentationMode' => true,
         'openFile' => false,
         'print' => false,
         'download' => false,

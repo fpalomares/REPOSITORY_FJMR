@@ -52,7 +52,7 @@ use yii\widgets\ActiveForm;
         <div class="col-xs-2">
             <div class="form-group">
                 <label>&nbsp;</label>
-                <?= Html::button('Selecciona',['id'=>'js-pick-document', 'class'=>'btn btn-primary', 'style' => 'width: 100%;']) ?>
+                <?= Html::button('Elige',['id'=>'js-pick-document', 'class'=>'btn btn-primary', 'style' => 'width: 100%;']) ?>
             </div>
         </div>
     </div>
